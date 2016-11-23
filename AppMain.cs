@@ -40,7 +40,8 @@ namespace SocketListerGaoxin
 
         public static UdpClient uc;
         public static System.Net.IPEndPoint ipp;
-
+        public static UdpClient uc_back;
+        public static System.Net.IPEndPoint ipp_back;
         /// <summary>
         /// Application starts here. Create an instance of this class and use it
         /// as the main object.
@@ -61,6 +62,10 @@ namespace SocketListerGaoxin
 
             uc = new UdpClient();
             ipp = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ConfigurationManager.AppSettings["udpDoubleServer"]), int.Parse(ConfigurationManager.AppSettings["updprot"]));
+
+
+            uc_back = new UdpClient();
+            ipp_back = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ConfigurationManager.AppSettings["udpDoubleServer_back"]), int.Parse(ConfigurationManager.AppSettings["updprot_back"]));
 
 
             IPAddress ip = IPAddress.Parse(oc.IPAddress());
@@ -163,7 +168,7 @@ namespace SocketListerGaoxin
                                     {
                                         sb.AppendFormat(",{0}:{1}:192", keyValuePair.Key + 33, random.Next(1, 101));
                                         bool flag = false;
-                                        for (int i = 0; i < 4; i++)
+                                        for (int i = 1; i < 4; i++)
                                         {
                                             if (dic_Rec.ContainsKey(keyValuePair.Key + 80*i))
                                             {
@@ -288,10 +293,10 @@ namespace SocketListerGaoxin
                                 //Console.WriteLine(sb.ToString());
                                 byte[] bytes = Encoding.ASCII.GetBytes(sb.ToString());
                                 uc.Send(bytes, bytes.Length, ipp);
-
+                                uc_back.Send(bytes, bytes.Length, ipp_back);
                                 sb.Length = 0;
                                 Console.WriteLine("No:" + UDPItem0[0] + "设压:" + strSetp + "|进压:" + strInp + "|出压:" + strOutp + "|OPC时间：" + mat.Groups[1] + ":");
-                                //objhelper.UpdateSql(conn, UDPItem0[0], strSetp, strInp, strOutp, mat.Groups[1].ToString(), strFeedBack, strTotal_E, strA_Current, strAB_Voltage, strA_Current2, strAB_Voltage2, No1M_Run, No2M_Run);
+                                objhelper.UpdateSql(conn, UDPItem0[0], strSetp, strInp, strOutp, mat.Groups[1].ToString(), strFeedBack, strTotal_E, strA_Current, strAB_Voltage, strA_Current2, strAB_Voltage2, No1M_Run, No2M_Run);
                             }
                         }
                         else if (intNO % 100 == 0)
@@ -308,7 +313,7 @@ namespace SocketListerGaoxin
                                     {
                                         sb.AppendFormat(",{0}:{1}:192", keyValuePair.Key + 33, random.Next(1, 101));
                                         bool flag = false;
-                                        for (int i = 0; i < 4; i++)
+                                        for (int i = 1; i < 4; i++)
                                         {
                                             if (dic_Rec.ContainsKey(keyValuePair.Key + 100 * i))
                                             {
@@ -376,10 +381,10 @@ namespace SocketListerGaoxin
                                 //Console.WriteLine(sb.ToString());
                                 byte[] bytes = Encoding.ASCII.GetBytes(sb.ToString());
                                 uc.Send(bytes, bytes.Length, ipp);
-
+                                uc_back.Send(bytes, bytes.Length, ipp_back);
                                 sb.Length = 0;
                                 Console.WriteLine("No:" + UDPItem0[0] + "设压:" + strSetp + "|进压:" + strInp + "|出压:" + strOutp + "|OPC时间：" + mat.Groups[1] + ":");
-                                //objhelper.UpdateSql(conn, UDPItem0[0], strSetp, strInp, strOutp, mat.Groups[1].ToString(), strFeedBack, strTotal_E, strA_Current, strAB_Voltage, strA_Current2, strAB_Voltage2, No1M_Run, No2M_Run);
+                                objhelper.UpdateSql(conn, UDPItem0[0], strSetp, strInp, strOutp, mat.Groups[1].ToString(), strFeedBack, strTotal_E, strA_Current, strAB_Voltage, strA_Current2, strAB_Voltage2, No1M_Run, No2M_Run);
                             }
                         }
 
