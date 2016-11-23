@@ -140,66 +140,148 @@ namespace SocketListerGaoxin
                         UDPItem0 = UDPItems[0].Split(Colon);
                         int intNO = int.Parse(UDPItem0[0]);
 
+                        Dictionary<int,string> dic_Rec=new Dictionary<int, string>();
+                        foreach (string udpItem in UDPItems)
+                        {
+                            udpItemFor = udpItem.Split(Colon);
+                            int strNO = int.Parse(udpItemFor[0]);
+                            dic_Rec.Add(strNO,udpItemFor[1]);
+                        }
+
                         if (intNO % 80 == 0)
                         {
                             StringBuilder sb = new StringBuilder();
                             sb.AppendFormat("FDFDV1.00.00L999DT{0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                            foreach (var item in UDPItems)
+
+                            foreach (var keyValuePair in dic_Rec)
                             {
-                                udpItemFor = item.Split(Colon);
-                                int strNO = int.Parse(udpItemFor[0]);
+                                int strNO = keyValuePair.Key;
                                 int theV = strNO % 80;
                                 if (strNO - intNO >= 80)
                                 {
                                     if (theV == 0)
                                     {
-                                        sb.AppendFormat(",{0}:{1}:192", int.Parse(udpItemFor[0]) + 33, random.Next(1, 101));
+                                        sb.AppendFormat(",{0}:{1}:192", keyValuePair.Key + 33, random.Next(1, 101));
+                                        bool flag = false;
+                                        for (int i = 0; i < 4; i++)
+                                        {
+                                            if (dic_Rec.ContainsKey(keyValuePair.Key + 80*i))
+                                            {
+                                                sb.AppendFormat(",{0}:{1}:192", keyValuePair.Key + 80 * i + 33, random.Next(1, 101));
+                                            }
+                                            else
+                                            {
+                                                flag = true;
+                                                break;
+                                            }
+                                        }
+                                        if (flag)
+                                        {
+                                            break;
+                                        }
+                                        
                                     }
-                                    //break;
                                 }
                                 else
                                 {
                                     switch (theV)
                                     {
                                         case 0:
-                                            strSetp = udpItemFor[1];
-                                            sb.AppendFormat(",{0}:{1}:192", int.Parse(udpItemFor[0]) + 33, random.Next(1, 101));
+                                            strSetp = keyValuePair.Value;
+                                            sb.AppendFormat(",{0}:{1}:192", keyValuePair.Key + 33, random.Next(1, 101));
                                             break;
                                         case 1:
-                                            strInp = udpItemFor[1];
+                                            strInp = keyValuePair.Value;
                                             break;
                                         case 2:
-                                            strOutp = udpItemFor[1];
+                                            strOutp = keyValuePair.Value;
                                             break;
                                         case 4:
-                                            strFeedBack = udpItemFor[1];
+                                            strFeedBack = keyValuePair.Value;
                                             break;
                                         case 37:
-                                            strTotal_E = udpItemFor[1];
+                                            strTotal_E = keyValuePair.Value;
                                             break;
                                         case 5:
-                                            strA_Current = udpItemFor[1];
+                                            strA_Current = keyValuePair.Value;
                                             break;
                                         case 17:
-                                            strAB_Voltage = udpItemFor[1];
+                                            strAB_Voltage = keyValuePair.Value;
                                             break;
                                         case 8:
-                                            strA_Current2 = udpItemFor[1];
+                                            strA_Current2 = keyValuePair.Value;
                                             break;
                                         case 20:
-                                            strAB_Voltage2 = udpItemFor[1];
+                                            strAB_Voltage2 = keyValuePair.Value;
                                             break;
                                         case 42:
-                                            No1M_Run = udpItemFor[1];
+                                            No1M_Run = keyValuePair.Value;
                                             break;
                                         case 45:
-                                            No2M_Run = udpItemFor[1];
+                                            No2M_Run = keyValuePair.Value;
+                                            break;
+                                        default:
                                             break;
                                     }
                                 }
-
-                                
                             }
+
+                            //foreach (var item in UDPItems)
+                            //{
+                            //    udpItemFor = item.Split(Colon);
+                            //    int strNO = int.Parse(udpItemFor[0]);
+                            //    int theV = strNO % 80;
+                            //    if (strNO - intNO >= 80)
+                            //    {
+
+                            //        if (theV == 0)
+                            //        {
+                            //            sb.AppendFormat(",{0}:{1}:192", int.Parse(udpItemFor[0]) + 33, random.Next(1, 101));
+                            //        }
+                            //        //break;
+                            //    }
+                            //    else
+                            //    {
+                            //        switch (theV)
+                            //        {
+                            //            case 0:
+                            //                strSetp = udpItemFor[1];
+                            //                sb.AppendFormat(",{0}:{1}:192", int.Parse(udpItemFor[0]) + 33, random.Next(1, 101));
+                            //                break;
+                            //            case 1:
+                            //                strInp = udpItemFor[1];
+                            //                break;
+                            //            case 2:
+                            //                strOutp = udpItemFor[1];
+                            //                break;
+                            //            case 4:
+                            //                strFeedBack = udpItemFor[1];
+                            //                break;
+                            //            case 37:
+                            //                strTotal_E = udpItemFor[1];
+                            //                break;
+                            //            case 5:
+                            //                strA_Current = udpItemFor[1];
+                            //                break;
+                            //            case 17:
+                            //                strAB_Voltage = udpItemFor[1];
+                            //                break;
+                            //            case 8:
+                            //                strA_Current2 = udpItemFor[1];
+                            //                break;
+                            //            case 20:
+                            //                strAB_Voltage2 = udpItemFor[1];
+                            //                break;
+                            //            case 42:
+                            //                No1M_Run = udpItemFor[1];
+                            //                break;
+                            //            case 45:
+                            //                No2M_Run = udpItemFor[1];
+                            //                break;
+                            //        }
+                            //    }
+                            //}
+                            dic_Rec.Clear();
                             if (UDPItem0.Length > 0)
                             {
                                 sb.Append("FEFE");
@@ -209,64 +291,81 @@ namespace SocketListerGaoxin
 
                                 sb.Length = 0;
                                 Console.WriteLine("No:" + UDPItem0[0] + "设压:" + strSetp + "|进压:" + strInp + "|出压:" + strOutp + "|OPC时间：" + mat.Groups[1] + ":");
-                                objhelper.UpdateSql(conn, UDPItem0[0], strSetp, strInp, strOutp, mat.Groups[1].ToString(), strFeedBack, strTotal_E, strA_Current, strAB_Voltage, strA_Current2, strAB_Voltage2, No1M_Run, No2M_Run);
+                                //objhelper.UpdateSql(conn, UDPItem0[0], strSetp, strInp, strOutp, mat.Groups[1].ToString(), strFeedBack, strTotal_E, strA_Current, strAB_Voltage, strA_Current2, strAB_Voltage2, No1M_Run, No2M_Run);
                             }
                         }
-
                         else if (intNO % 100 == 0)
                         {
                             StringBuilder sb = new StringBuilder();
                             sb.AppendFormat("FDFDV1.00.00L999DT{0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                            foreach (var item in UDPItems)
+                            foreach (var keyValuePair in dic_Rec)
                             {
-                                udpItemFor = item.Split(Colon);
-                                int strNO = int.Parse(udpItemFor[0]);
+                                int strNO = keyValuePair.Key;
                                 int theV = strNO % 100;
                                 if (strNO - intNO >= 100)
                                 {
                                     if (theV == 0)
                                     {
-                                        sb.AppendFormat(",{0}:{1}:192", int.Parse(udpItemFor[0]) + 33, random.Next(1, 101));
+                                        sb.AppendFormat(",{0}:{1}:192", keyValuePair.Key + 33, random.Next(1, 101));
+                                        bool flag = false;
+                                        for (int i = 0; i < 4; i++)
+                                        {
+                                            if (dic_Rec.ContainsKey(keyValuePair.Key + 100 * i))
+                                            {
+                                                sb.AppendFormat(",{0}:{1}:192", keyValuePair.Key + 100 * i + 33, random.Next(1, 101));
+                                            }
+                                            else
+                                            {
+                                                flag = true;
+                                                break;
+                                            }
+                                        }
+                                        if (flag)
+                                        {
+                                            break;
+                                        }
+
                                     }
-                                    //break;
                                 }
                                 else
                                 {
                                     switch (theV)
                                     {
                                         case 0:
-                                            strSetp = udpItemFor[1];
-                                            sb.AppendFormat(",{0}:{1}:192", int.Parse(udpItemFor[0]) + 33, random.Next(1, 101));
+                                            strSetp = keyValuePair.Value;
+                                            sb.AppendFormat(",{0}:{1}:192", keyValuePair.Key + 33, random.Next(1, 101));
                                             break;
                                         case 1:
-                                            strInp = udpItemFor[1];
+                                            strInp = keyValuePair.Value;
                                             break;
                                         case 2:
-                                            strOutp = udpItemFor[1];
+                                            strOutp = keyValuePair.Value;
                                             break;
                                         case 4:
-                                            strFeedBack = udpItemFor[1];
+                                            strFeedBack = keyValuePair.Value;
                                             break;
                                         case 37:
-                                            strTotal_E = udpItemFor[1];
+                                            strTotal_E = keyValuePair.Value;
                                             break;
                                         case 5:
-                                            strA_Current = udpItemFor[1];
+                                            strA_Current = keyValuePair.Value;
                                             break;
                                         case 17:
-                                            strAB_Voltage = udpItemFor[1];
+                                            strAB_Voltage = keyValuePair.Value;
                                             break;
                                         case 8:
-                                            strA_Current2 = udpItemFor[1];
+                                            strA_Current2 = keyValuePair.Value;
                                             break;
                                         case 20:
-                                            strAB_Voltage2 = udpItemFor[1];
+                                            strAB_Voltage2 = keyValuePair.Value;
                                             break;
                                         case 42:
-                                            No1M_Run = udpItemFor[1];
+                                            No1M_Run = keyValuePair.Value;
                                             break;
                                         case 45:
-                                            No2M_Run = udpItemFor[1];
+                                            No2M_Run = keyValuePair.Value;
+                                            break;
+                                        default:
                                             break;
                                     }
                                 }
@@ -280,7 +379,7 @@ namespace SocketListerGaoxin
 
                                 sb.Length = 0;
                                 Console.WriteLine("No:" + UDPItem0[0] + "设压:" + strSetp + "|进压:" + strInp + "|出压:" + strOutp + "|OPC时间：" + mat.Groups[1] + ":");
-                                objhelper.UpdateSql(conn, UDPItem0[0], strSetp, strInp, strOutp, mat.Groups[1].ToString(), strFeedBack, strTotal_E, strA_Current, strAB_Voltage, strA_Current2, strAB_Voltage2, No1M_Run, No2M_Run);
+                                //objhelper.UpdateSql(conn, UDPItem0[0], strSetp, strInp, strOutp, mat.Groups[1].ToString(), strFeedBack, strTotal_E, strA_Current, strAB_Voltage, strA_Current2, strAB_Voltage2, No1M_Run, No2M_Run);
                             }
                         }
 
